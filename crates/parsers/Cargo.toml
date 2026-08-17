@@ -1,0 +1,9 @@
+[package]
+name = "parsers"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+epub = "2"
+anyhow = "1"
+pdf-extract = "0.7"
