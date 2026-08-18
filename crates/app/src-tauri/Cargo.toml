@@ -25,3 +25,4 @@ serde_json = "1"
 rusqlite = { version = "0.31.0", features = ["bundled"] }
 moka_core = { path = "../../core", package = "core" }
 parsers = { path = "../../parsers" }
+tauri-plugin-dialog = "2.7.2"

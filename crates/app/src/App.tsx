@@ -1,51 +1,32 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
+import Analyzer from "./pages/Analyzer";
+import History from "./pages/History";
+import Scraper from "./pages/Scraper";
+import { HashRouter, Routes, Route, Link } from "react-router-dom";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
-
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
-
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+    <HashRouter>
+      {/* Main container */}
+      <div className="min-h-screen bg-zinc-900 text-white flex flex-col">
+        
+        <nav className="bg-zinc-950 p-4 border-b border-zinc-800, flex gap-4">
+          <h1 className="font-bold text-violet-500 mr-4">MokaParse</h1>
+          <Link to="/" className="text-zinc-300 hover:text-white transition-colors">Analyzer</Link>
+          <Link to="/history" className="text-zinc-300 hover:text-white transition-colors">History</Link>
+          <Link to="/scraper" className="text-zinc-300 hover:text-white transition-colors">Scraper</Link>
+        </nav>
 
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <main className="flex-1 overflow-y-auto">
+          <Routes>
+            <Route path="/" element={<Analyzer /> } />
+            <Route path="/history" element={<History /> } />
+            <Route path="/scraper" element={<Scraper /> } />
+          </Routes>
+        </main>
       </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
-  );
+    </HashRouter>
+  )
 }
 
 export default App;
