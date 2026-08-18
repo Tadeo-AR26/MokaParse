@@ -3,7 +3,7 @@ use crate::jlpt::JlptLevel;
 use crate::jlpt::jlpt_level;
 use std::collections::HashMap;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, serde::Serialize)]
 pub struct TextAnalysis {
     pub total_kanjis: usize,
     pub unique_kanjis: usize,

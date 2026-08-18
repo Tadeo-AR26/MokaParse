@@ -1,4 +1,4 @@
-#[derive(Debug, PartialEq, Hash, Eq)]
+#[derive(Debug, PartialEq, Hash, Eq,  serde::Serialize)]
 pub enum JlptLevel {
     N1,
     N2,
