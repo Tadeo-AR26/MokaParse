@@ -15,7 +15,9 @@ target/
 *.pdf
 implementation_plan.md
 gui_architecture.md
+anki_feature_plan.md
 *.db
+kanjidic2.xml
 
 # GUI / Frontend (React + Vite)
 node_modules/

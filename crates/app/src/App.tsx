@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import Analyzer from "./pages/Analyzer";
 import History from "./pages/History";
-import Scraper from "./pages/Scraper";
 import { HashRouter, Routes, Route, NavLink } from "react-router-dom";
 
 function App() {
@@ -27,15 +26,15 @@ function App() {
           <div className="nav-links">
             <NavLink to="/" className={({isActive}) => isActive ? "nav-link active" : "nav-link"}>Analyzer</NavLink>
             <NavLink to="/history" className={({isActive}) => isActive ? "nav-link active" : "nav-link"}>History</NavLink>
-            <NavLink to="/scraper" className={({isActive}) => isActive ? "nav-link active" : "nav-link"}>Scraper</NavLink>
+            <NavLink to="/anki" className={({isActive}) => isActive ? "nav-link active" : "nav-link"}>Anki Export</NavLink>
           </div>
         </nav>
 
         <main className="main-content">
           <Routes>
-            <Route path="/" element={<Analyzer /> } />
-            <Route path="/history" element={<History /> } />
-            <Route path="/scraper" element={<Scraper /> } />
+            <Route path="/" element={<Analyzer />} />
+            <Route path="/history" element={<History />} />
+            {/* TODO: <Route path="/anki" element={<AnkiExport />} /> */}
           </Routes>
         </main>
 
@@ -49,3 +48,4 @@ function App() {
 }
 
 export default App;
+
