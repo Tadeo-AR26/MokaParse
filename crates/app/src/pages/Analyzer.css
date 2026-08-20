@@ -1,0 +1,186 @@
+/* Analyzer.css */
+.analyzer-container {
+  max-width: 65rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.page-title {
+  font-size: 3rem;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  color: var(--text-main);
+  margin-bottom: 3.5rem;
+  text-align: center;
+}
+
+/* Glass panel action card */
+.action-card {
+  background: var(--surface);
+  backdrop-filter: blur(1.5rem);
+  -webkit-backdrop-filter: blur(1.5rem);
+  box-shadow: var(--surface-shadow);
+  border-radius: 1.5rem;
+  padding: 2.5rem 3.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.action-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.action-subtitle {
+  font-family: 'Inter', sans-serif;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+.btn-primary {
+  font-family: 'Inter', sans-serif;
+  background: var(--primary-gradient);
+  color: #fff;
+  border: none;
+  padding: 1rem 2.5rem;
+  border-radius: 2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--primary-shadow);
+}
+
+.btn-primary:hover {
+  transform: translateY(-0.125rem);
+  box-shadow: 0 0.75rem 2rem rgba(173, 216, 230, 0.6);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.btn-secondary:hover {
+  color: var(--primary-color);
+}
+
+.error-box {
+  background: var(--danger-bg);
+  color: var(--danger);
+  padding: 1.5rem 2.5rem;
+  border-radius: 1rem;
+  margin-bottom: 4rem;
+  backdrop-filter: blur(0.5rem);
+}
+
+/* Remove card background for summaries, use clean typography */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3rem;
+  margin-bottom: 5rem;
+}
+
+.summary-card {
+  text-align: center;
+  padding: 1rem;
+}
+
+.summary-label {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.summary-value {
+  font-size: 4.5rem;
+  font-weight: 300;
+  color: var(--text-main);
+  margin-top: 0.5rem;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Clean cards without borders */
+.chart-card, .kanji-card {
+  background: transparent;
+  margin-bottom: 5rem;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(0,0,0,0.05); /* very subtle line */
+}
+
+[data-theme='dark'] .card-header {
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.card-title {
+  font-size: 1.75rem;
+  font-weight: 300;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.kanji-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
+  gap: 1.5rem;
+}
+
+.kanji-item {
+  background: var(--surface-solid);
+  border-radius: 1rem;
+  padding: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--surface-shadow);
+  transition: transform 0.3s ease;
+}
+
+.kanji-item:hover {
+  transform: translateY(-0.25rem);
+}
+
+.kanji-char {
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin-bottom: 0.75rem;
+  color: var(--text-main);
+}
+
+.kanji-count {
+  font-size: 0.95rem;
+  color: var(--primary-color);
+  font-weight: 600;
+}

@@ -2,10 +2,11 @@ import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import "./Analyzer.css";
 
 export default function Analyzer() {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
-    const [result, setResult] = useState<any>(null); //Completar esto mas tarde
+    const [result, setResult] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const [showAllKanjis, setShowAllKanjis] = useState(false);
 
@@ -53,92 +54,108 @@ export default function Analyzer() {
             kanji, count: Number(count) }))
             .sort((a, b) => b.count - a.count);
     }
+
+    const tooltipStyle = { backgroundColor: 'var(--surface-solid)', borderColor: 'var(--surface-border)', color: 'var(--text-main)', borderRadius: '0.5rem', padding: '1rem', boxShadow: 'var(--surface-shadow)' };
+
     return (
-        <div className="p-8 max-w-6x1 mx-auto">
-            <h2 className="text-3x1 font-bold text-violet-400 mb-8">Text Analyzer</h2>
-            <div className="bg-zinc-800 p-6 rounded-x1 border border-zinc-700 mb-8 flex items-center
-            justify-between">
+        <div className="analyzer-container">
+            {/* Defs for gradients */}
+            <svg width="0" height="0">
+                <defs>
+                    <linearGradient id="primaryGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="var(--primary-color)" />
+                        <stop offset="100%" stopColor="#87CEFA" />
+                    </linearGradient>
+                    <linearGradient id="unknownGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="var(--text-muted)" />
+                        <stop offset="100%" stopColor="var(--surface-border)" />
+                    </linearGradient>
+                </defs>
+            </svg>
+
+            <h2 className="page-title">Text Analyzer</h2>
+            <div className="action-card">
                 <div>
-                    <h3 className="text-x1 font-semibold mb-2">Select a book</h3>
-                    <p className="text-zinc-400">Supports .epub and .pdf</p>
+                    <h3 className="action-title">Select a book</h3>
+                    <p className="action-subtitle">Supports .epub and .pdf</p>
                 </div>
                 <button onClick={handleOpenFile}
                 disabled={isAnalyzing}
-                className="bg-violet-600 hover:bg-violet-500 text-white px-6 py-3
-                rounded-lg font-medium transition-colors disable:opacity-50">
+                className="btn-primary">
                     {isAnalyzing ? "Analyzing..." : "Open File"}
                 </button>
             </div>
-                {/* Zona de Errores */}
-                {error && (
-                    <div className="bg-red-900/50 border border-red-500 text-red-200 p-4 rounded-lg mb-8">
-                        <p>Error: {error}</p>
-                    </div>
-                )}
+            
+            {/* Zona de Errores */}
+            {error && (
+                <div className="error-box">
+                    <p>Error: {error}</p>
+                </div>
+            )}
 
-                    {/* Zona de Resultados */}
-                    {result && (
-                        <div className="space-y-8">
-                            {/* Tarjetas de Resumen */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-zinc-800 p-6 rounded-xl border border-zinc-700 text-center">
-                                    <p className="text-zinc-400 text-sm">Total Kanjis</p>
-                                    <p className="text-4xl font-bold text-violet-400 mt-2">{result.total_kanjis}</p>
-                                </div>
-                                <div className="bg-zinc-800 p-6 rounded-xl border border-zinc-700 text-center">
-                                    <p className="text-zinc-400 text-sm">Unique Kanji</p>
-                                    <p className="text-4xl font-bold text-violet-400 mt-2">{result.unique_kanjis}</p>
-                                </div>
-                            </div>
-
-                            {/* Gráfico JLPT */}
-                            <div className="bg-zinc-800 p-6 rounded-xl border border-zinc-700">
-                                <h3 className="text-xl font-semibold mb-6">JLPT Distribution</h3>
-                                <div className="h-64">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={chartData}>
-                                            <XAxis dataKey="name" stroke="#a1a1aa" />
-                                            <YAxis stroke="#a1a1aa" />
-                                            <Tooltip 
-                                                contentStyle={{ backgroundColor: '#18181b', borderColor: '#3f3f46' }}
-                                                itemStyle={{ color: '#a78bfa' }}
-                                            />
-                                            <Bar dataKey="count" radius={[4, 4, 0, 0]}>
-                                                {chartData.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={entry.name === 'Unknown' ? '#52525b' : '#8b5cf6'} />
-                                                ))}
-                                            </Bar>
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </div>
-                            </div>
-
-                            {/* Tabla de Kanjis */}
-                            <div className="bg-zinc-800 p-6 rounded-xl border border-zinc-700">
-                                <div className="flex justify-between items-center mb-6">
-                                    <h3 className="text-xl font-semibold">
-                                        {showAllKanjis ? "All Kanjis" : "Top 20 Most Used Kanjis"}
-                                    </h3>
-                                    <button 
-                                        onClick={() => setShowAllKanjis(!showAllKanjis)}
-                                        className="text-sm bg-zinc-700 hover:bg-zinc-600 px-3 py-1 rounded transition-colors"
-                                    >
-                                        {showAllKanjis ? "Show Top 20 only" : "View all"}
-                                    </button>
-                                </div>
-
-                                <div className="grid grid-cols-5 md:grid-cols-10 gap-3">
-                                    {(showAllKanjis ? sortedKanjis : sortedKanjis.slice(0, 20)).map((item, i) => (
-                                        <div key={i} className="bg-zinc-900 border border-zinc-700 rounded p-3 text-center flex flex-col justify-center">
-                                            <span className="text-2xl mb-1">{item.kanji}</span>
-                                            <span className="text-xs text-zinc-500">{item.count}x</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
+            {/* Zona de Resultados */}
+            {result && (
+                <div>
+                    {/* Tarjetas de Resumen */}
+                    <div className="summary-grid">
+                        <div className="summary-card">
+                            <p className="summary-label">Total Kanjis</p>
+                            <p className="summary-value">{result.total_kanjis}</p>
                         </div>
-                    )}
+                        <div className="summary-card">
+                            <p className="summary-label">Unique Kanji</p>
+                            <p className="summary-value">{result.unique_kanjis}</p>
+                        </div>
+                    </div>
 
+                    {/* Gráfico JLPT */}
+                    <div className="chart-card">
+                        <h3 className="card-title">JLPT Distribution</h3>
+                        <div style={{ height: '350px' }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={chartData} margin={{top: 20, right: 30, left: 20, bottom: 5}}>
+                                    <XAxis dataKey="name" stroke="var(--text-muted)" tickLine={false} axisLine={false} />
+                                    <YAxis stroke="var(--text-muted)" tickLine={false} axisLine={false} />
+                                    <Tooltip 
+                                        contentStyle={tooltipStyle}
+                                        itemStyle={{ color: 'var(--primary-color)', fontWeight: '600' }}
+                                        cursor={{fill: 'var(--backdrop)'}}
+                                    />
+                                    <Bar dataKey="count" radius={[8, 8, 0, 0]}>
+                                        {chartData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.name === 'Unknown' ? 'url(#unknownGradient)' : 'url(#primaryGradient)'} />
+                                        ))}
+                                    </Bar>
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+
+                    {/* Tabla de Kanjis */}
+                    <div className="kanji-card">
+                        <div className="card-header">
+                            <h3 className="card-title">
+                                {showAllKanjis ? "All Kanjis" : "Top 20 Most Used Kanjis"}
+                            </h3>
+                            <button 
+                                onClick={() => setShowAllKanjis(!showAllKanjis)}
+                                className="btn-secondary"
+                            >
+                                {showAllKanjis ? "Show Top 20 only" : "View all"}
+                            </button>
+                        </div>
+
+                        <div className="kanji-grid">
+                            {(showAllKanjis ? sortedKanjis : sortedKanjis.slice(0, 20)).map((item, i) => (
+                                <div key={i} className="kanji-item">
+                                    <span className="kanji-char">{item.kanji}</span>
+                                    <span className="kanji-count">{item.count}x</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

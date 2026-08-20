@@ -1,29 +1,48 @@
+import { useState, useEffect } from "react";
 import "./App.css";
 import Analyzer from "./pages/Analyzer";
 import History from "./pages/History";
 import Scraper from "./pages/Scraper";
-import { HashRouter, Routes, Route, Link } from "react-router-dom";
+import { HashRouter, Routes, Route, NavLink } from "react-router-dom";
 
 function App() {
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
+
   return (
     <HashRouter>
       {/* Main container */}
-      <div className="min-h-screen bg-zinc-900 text-white flex flex-col">
+      <div className="app-container">
         
-        <nav className="bg-zinc-950 p-4 border-b border-zinc-800, flex gap-4">
-          <h1 className="font-bold text-violet-500 mr-4">MokaParse</h1>
-          <Link to="/" className="text-zinc-300 hover:text-white transition-colors">Analyzer</Link>
-          <Link to="/history" className="text-zinc-300 hover:text-white transition-colors">History</Link>
-          <Link to="/scraper" className="text-zinc-300 hover:text-white transition-colors">Scraper</Link>
+        <nav className="nav-bar">
+          <NavLink to="/" className="nav-brand">MokaParse</NavLink>
+          
+          <div className="nav-links">
+            <NavLink to="/" className={({isActive}) => isActive ? "nav-link active" : "nav-link"}>Analyzer</NavLink>
+            <NavLink to="/history" className={({isActive}) => isActive ? "nav-link active" : "nav-link"}>History</NavLink>
+            <NavLink to="/scraper" className={({isActive}) => isActive ? "nav-link active" : "nav-link"}>Scraper</NavLink>
+          </div>
         </nav>
 
-        <main className="flex-1 overflow-y-auto">
+        <main className="main-content">
           <Routes>
             <Route path="/" element={<Analyzer /> } />
             <Route path="/history" element={<History /> } />
             <Route path="/scraper" element={<Scraper /> } />
           </Routes>
         </main>
+
+        {/* Floating Theme Toggle */}
+        <button onClick={toggleTheme} className="theme-toggle">
+          {theme === 'light' ? '🌙 Dark Mode' : '☀️ Light Mode'}
+        </button>
       </div>
     </HashRouter>
   )

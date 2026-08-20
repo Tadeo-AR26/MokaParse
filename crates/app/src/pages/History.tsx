@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import "./History.css";
 
 type HistoryRecord = {
   id: number;
@@ -31,31 +32,46 @@ export default function History() {
     loadHistory();
   }, []);
 
+  const tooltipStyle = { backgroundColor: 'var(--surface-solid)', borderColor: 'var(--surface-border)', color: 'var(--text-main)', borderRadius: '0.5rem', padding: '1rem', boxShadow: 'var(--surface-shadow)' };
+
   return (
-    <div className="p-8 max-w-6xl mx-auto relative">
-      <h2 className="text-3xl font-bold text-violet-400 mb-8">Analysis History</h2>
+    <div className="history-container">
+      {/* Defs for gradients */}
+      <svg width="0" height="0">
+          <defs>
+              <linearGradient id="primaryGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--primary-color)" />
+                  <stop offset="100%" stopColor="#87CEFA" />
+              </linearGradient>
+              <linearGradient id="unknownGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--text-muted)" />
+                  <stop offset="100%" stopColor="var(--surface-border)" />
+              </linearGradient>
+          </defs>
+      </svg>
+      <h2 className="page-title">Analysis History</h2>
       
       {loading ? (
-        <p className="text-zinc-400">Loading...</p>
+        <p style={{color: 'var(--text-muted)'}}>Loading...</p>
       ) : records.length === 0 ? (
-        <div className="bg-zinc-800 p-8 rounded-xl border border-zinc-700 text-center">
-          <p className="text-zinc-400">No books found.</p>
+        <div className="empty-state">
+          <p>No books found.</p>
         </div>
       ) : (
-        <div className="grid gap-4">
+        <div className="history-list">
           {records.map((record) => (
             <div 
               key={record.id} 
               onClick={() => setSelectedRecord(record)}
-              className="bg-zinc-800 p-6 rounded-xl border border-zinc-700 flex justify-between items-center hover:border-violet-500 transition-colors cursor-pointer"
+              className="history-item"
             >
               <div>
-                <h3 className="text-xl font-bold text-white mb-1">{record.file_name}</h3>
-                <p className="text-sm text-zinc-400">Date: {record.analyzed_at}</p>
+                <h3 className="history-title">{record.file_name}</h3>
+                <p className="history-date">Date: {record.analyzed_at}</p>
               </div>
-              <div className="text-right">
-                <p className="text-sm text-zinc-400 mb-1">Total Kanji</p>
-                <p className="text-2xl font-bold text-violet-400">{record.total_kanjis}</p>
+              <div>
+                <p className="history-stat-label">Total Kanji</p>
+                <p className="history-stat-value">{record.total_kanjis}</p>
               </div>
             </div>
           ))}
@@ -76,53 +92,54 @@ export default function History() {
             .sort((a, b) => b.count - a.count);
 
         return (
-          <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
-            <div className="bg-zinc-900 border border-zinc-700 rounded-xl max-w-5xl w-full max-h-[90vh] flex flex-col shadow-2xl">
-              <div className="p-6 border-b border-zinc-800 flex justify-between items-start">
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <div className="modal-header">
                 <div>
-                  <h3 className="text-2xl font-bold text-white mb-1">{selectedRecord.file_name}</h3>
-                  <p className="text-zinc-400">Analyzed on: {selectedRecord.analyzed_at}</p>
+                  <h3 className="modal-title">{selectedRecord.file_name}</h3>
+                  <p className="modal-subtitle">Analyzed on: {selectedRecord.analyzed_at}</p>
                 </div>
                 <button 
                   onClick={() => {
                     setSelectedRecord(null);
-                    setShowAllKanjis(false); // Reset state on closing
+                    setShowAllKanjis(false);
                   }}
-                  className="text-zinc-400 hover:text-white bg-zinc-800 hover:bg-zinc-700 p-2 rounded-lg transition-colors"
+                  className="modal-close-btn"
                 >
                   Close
                 </button>
               </div>
               
               {/* Analysis full content */}
-              <div className="p-6 overflow-y-auto space-y-8">
+              <div className="modal-body">
                   {/* Summary cards */}
-                  <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-zinc-800 p-6 rounded-xl border border-zinc-700 text-center">
-                          <p className="text-zinc-400 text-sm">Total Kanjis</p>
-                          <p className="text-4xl font-bold text-violet-400 mt-2">{result.total_kanjis}</p>
+                  <div className="summary-grid">
+                      <div className="summary-card">
+                          <p className="summary-label">Total Kanjis</p>
+                          <p className="summary-value">{result.total_kanjis}</p>
                       </div>
-                      <div className="bg-zinc-800 p-6 rounded-xl border border-zinc-700 text-center">
-                          <p className="text-zinc-400 text-sm">Unique Kanji</p>
-                          <p className="text-4xl font-bold text-violet-400 mt-2">{result.unique_kanjis}</p>
+                      <div className="summary-card">
+                          <p className="summary-label">Unique Kanji</p>
+                          <p className="summary-value">{result.unique_kanjis}</p>
                       </div>
                   </div>
 
                   {/* JLPT Graph */}
-                  <div className="bg-zinc-800 p-6 rounded-xl border border-zinc-700">
-                      <h3 className="text-xl font-semibold mb-6">JLPT Distribution</h3>
-                      <div className="h-64">
+                  <div className="chart-card">
+                      <h3 className="card-title" style={{marginBottom: '1rem'}}>JLPT Distribution</h3>
+                      <div style={{height: '350px'}}>
                           <ResponsiveContainer width="100%" height="100%">
-                              <BarChart data={chartData}>
-                                  <XAxis dataKey="name" stroke="#a1a1aa" />
-                                  <YAxis stroke="#a1a1aa" />
+                              <BarChart data={chartData} margin={{top: 20, right: 30, left: 20, bottom: 5}}>
+                                  <XAxis dataKey="name" stroke="var(--text-muted)" tickLine={false} axisLine={false} />
+                                  <YAxis stroke="var(--text-muted)" tickLine={false} axisLine={false} />
                                   <Tooltip 
-                                      contentStyle={{ backgroundColor: '#18181b', borderColor: '#3f3f46' }}
-                                      itemStyle={{ color: '#a78bfa' }}
+                                      contentStyle={tooltipStyle}
+                                      itemStyle={{ color: 'var(--primary-color)', fontWeight: '600' }}
+                                      cursor={{fill: 'var(--backdrop)'}}
                                   />
-                                  <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                                  <Bar dataKey="count" radius={[8, 8, 0, 0]}>
                                       {chartData.map((entry, index) => (
-                                          <Cell key={`cell-${index}`} fill={entry.name === 'Unknown' ? '#52525b' : '#8b5cf6'} />
+                                          <Cell key={`cell-${index}`} fill={entry.name === 'Unknown' ? 'url(#unknownGradient)' : 'url(#primaryGradient)'} />
                                       ))}
                                   </Bar>
                               </BarChart>
@@ -131,24 +148,24 @@ export default function History() {
                   </div>
 
                   {/* Kanji Table */}
-                  <div className="bg-zinc-800 p-6 rounded-xl border border-zinc-700">
-                      <div className="flex justify-between items-center mb-6">
-                          <h3 className="text-xl font-semibold">
+                  <div className="kanji-card">
+                      <div className="card-header">
+                          <h3 className="card-title">
                               {showAllKanjis ? "All Kanjis" : "Top 20 Most Used Kanjis"}
                           </h3>
                           <button 
                               onClick={() => setShowAllKanjis(!showAllKanjis)}
-                              className="text-sm bg-zinc-700 hover:bg-zinc-600 px-3 py-1 rounded transition-colors"
+                              className="btn-secondary"
                           >
                               {showAllKanjis ? "Show Top 20 only" : "View all"}
                           </button>
                       </div>
 
-                      <div className="grid grid-cols-5 md:grid-cols-10 gap-3">
+                      <div className="kanji-grid">
                           {(showAllKanjis ? sortedKanjis : sortedKanjis.slice(0, 20)).map((item, i) => (
-                              <div key={i} className="bg-zinc-900 border border-zinc-700 rounded p-3 text-center flex flex-col justify-center">
-                                  <span className="text-2xl mb-1">{item.kanji}</span>
-                                  <span className="text-xs text-zinc-500">{item.count}x</span>
+                              <div key={i} className="kanji-item">
+                                  <span className="kanji-char">{item.kanji}</span>
+                                  <span className="kanji-count">{item.count}x</span>
                               </div>
                           ))}
                       </div>
