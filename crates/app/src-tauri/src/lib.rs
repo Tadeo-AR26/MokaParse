@@ -16,7 +16,8 @@ pub fn run() {
             db::init().expect("Critical Error. Failed to initialize the database");
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![commands::analyze_file_command])
+        .invoke_handler(tauri::generate_handler![commands::analyze_file_command,
+            commands::get_history_command])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
