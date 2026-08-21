@@ -8,14 +8,19 @@ pub enum JlptLevel {
     Unknown,
 }
 
-pub fn jlpt_level(c: char) -> JlptLevel {
-    let data_n5 = include_str!("../data/jlpt_n5.txt");
-    let data_n4 = include_str!("../data/jlpt_n4.txt");
+use crate::readings::get_dictionary;
 
-    if data_n5.contains(c){
-        JlptLevel::N5
-    } else if data_n4.contains(c){
-        JlptLevel::N4
+pub fn jlpt_level(c: char) -> JlptLevel {
+    let kanji_str = c.to_string();
+    if let Some(info) = get_dictionary().get(&kanji_str) {
+        match info.jlpt {
+            Some(1) => JlptLevel::N1,
+            Some(2) => JlptLevel::N2,
+            Some(3) => JlptLevel::N3,
+            Some(4) => JlptLevel::N4,
+            Some(5) => JlptLevel::N5,
+            _ => JlptLevel::Unknown,
+        }
     } else {
         JlptLevel::Unknown
     }
