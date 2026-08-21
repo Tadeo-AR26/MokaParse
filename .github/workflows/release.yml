@@ -1,0 +1,82 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-tauri:
+    permissions:
+      contents: write  
+
+    strategy:
+      fail-fast: false 
+      matrix:
+        include:
+          - platform: 'macos-latest'
+            args: '--target aarch64-apple-darwin'   # Mac con chip Apple Silicon (M1/M2/M3)
+          - platform: 'macos-latest'
+            args: '--target x86_64-apple-darwin'    # Mac con Intel
+          - platform: 'ubuntu-22.04'
+            args: ''
+          - platform: 'windows-latest'
+            args: ''
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - name: Install Linux system dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libxdo-dev
+
+      - name: Install frontend dependencies
+        working-directory: crates/app
+        run: pnpm install
+
+      - name: Build and publish release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: crates/app
+          tagName: ${{ github.ref_name }}        # Usa el mismo tag que disparó el workflow
+          releaseName: 'MokaParse ${{ github.ref_name }}'
+          releaseBody: |
+            ## MokaParse ${{ github.ref_name }}
+
+            ### Installation
+            - **Windows**: Download and run the `.msi` or `.exe` installer
+            - **Linux**: Download the `.AppImage` (no install needed) or the `.deb` for Debian/Ubuntu
+            - **macOS**: Download the `.dmg`, open it and drag MokaParse to Applications
+
+            > **macOS note**: The app is not code-signed with an Apple certificate. 
+            > On first launch, right-click the app → Open → Open anyway.
+          releaseDraft: true   # Crea un BORRADOR 
+          prerelease: false
+          args: ${{ matrix.args }}
