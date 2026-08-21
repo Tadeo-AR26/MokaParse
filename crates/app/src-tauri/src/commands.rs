@@ -37,6 +37,11 @@ pub fn get_history_command() -> Result<Vec<db::HistoryRecord>, String> {
 }
 
 #[tauri::command]
+pub fn delete_history_command(id: i32) -> Result<(), String> {
+    db::delete_history(id)
+}
+
+#[tauri::command]
 pub fn get_kanji_readings(kanjis: Vec<String>) -> Result<Vec<KanjiInfo>, String> {
     let dic = get_dictionary();
     let mut results = Vec::new();

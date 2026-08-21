@@ -57,3 +57,12 @@ pub fn get_history() -> Result<Vec<HistoryRecord>, String> {
 
     Ok(history_list)
 }
+
+pub fn delete_history(id: i32) -> Result<(), String> {
+    let connection = Connection::open("moka_data.db").map_err(|e| e.to_string())?;
+    
+    connection.execute("DELETE FROM analysis_history WHERE id = ?1", params![id])
+        .map_err(|e| e.to_string())?;
+        
+    Ok(())
+}

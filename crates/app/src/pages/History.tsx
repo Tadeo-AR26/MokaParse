@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { confirm } from "@tauri-apps/plugin-dialog";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import AnkiExport from "./AnkiExport";
 import "./History.css";
@@ -27,6 +28,24 @@ export default function History() {
       console.error("Error loading the history:", error);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleDeleteRecord(id: number) {
+    const isConfirmed = await confirm("Are you sure you want to delete this record from the history?", { 
+        title: "Delete Record", 
+        kind: "warning" 
+    });
+    
+    if (isConfirmed) {
+      try {
+        await invoke("delete_history_command", { id });
+        setSelectedRecord(null);
+        loadHistory();
+      } catch (error) {
+        console.error("Error deleting record:", error);
+        alert("Failed to delete record");
+      }
     }
   }
 
@@ -102,6 +121,13 @@ export default function History() {
                   <p className="modal-subtitle">Analyzed on: {selectedRecord.analyzed_at}</p>
                 </div>
                 <div>
+                  <button 
+                    onClick={() => handleDeleteRecord(selectedRecord.id)}
+                    className="modal-close-btn"
+                    style={{marginRight: '1rem', color: 'var(--danger)', padding: '0.8rem 1.5rem'}}
+                  >
+                    Delete
+                  </button>
                   <button 
                     onClick={() => setIsAnkiExportOpen(true)}
                     className="btn-primary"

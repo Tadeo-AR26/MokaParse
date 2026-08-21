@@ -20,7 +20,8 @@ pub fn run() {
             commands::analyze_file_command,
             commands::get_history_command,
             commands::get_kanji_readings,
-            commands::export_to_anki
+            commands::export_to_anki,
+            commands::delete_history_command
             ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
