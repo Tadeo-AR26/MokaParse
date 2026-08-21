@@ -57,7 +57,7 @@ jobs:
 
       - name: Install frontend dependencies
         working-directory: crates/app
-        run: pnpm install
+        run: pnpm install --ignore-workspace
 
       - name: Build and publish release
         uses: tauri-apps/tauri-action@v0
