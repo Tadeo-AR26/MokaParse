@@ -2,6 +2,7 @@ import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import AnkiExport from "./AnkiExport";
 import "./Analyzer.css";
 
 export default function Analyzer() {
@@ -9,6 +10,7 @@ export default function Analyzer() {
     const [result, setResult] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const [showAllKanjis, setShowAllKanjis] = useState(false);
+    const [isAnkiExportOpen, setIsAnkiExportOpen] = useState(false);
 
     async function handleOpenFile(){
         try {
@@ -143,6 +145,13 @@ export default function Analyzer() {
                             >
                                 {showAllKanjis ? "Show Top 20 only" : "View all"}
                             </button>
+                            <button 
+                                onClick={() => setIsAnkiExportOpen(true)}
+                                className="btn-primary" 
+                                style={{marginLeft: '1rem', padding: '0.5rem 1.5rem'}}
+                            >
+                                Export to Anki
+                            </button>
                         </div>
 
                         <div className="kanji-grid">
@@ -156,6 +165,12 @@ export default function Analyzer() {
                     </div>
                 </div>
             )}
+            
+            <AnkiExport 
+                isOpen={isAnkiExportOpen} 
+                onClose={() => setIsAnkiExportOpen(false)} 
+                kanjiList={sortedKanjis} 
+            />
         </div>
     )
 }

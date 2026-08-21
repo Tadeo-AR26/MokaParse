@@ -1,0 +1,199 @@
+/* AnkiExport.css */
+
+.anki-modal {
+  max-width: 80rem !important; /* Wider than history modal */
+}
+
+.anki-modal-body {
+  padding-top: 0 !important;
+}
+
+.anki-content-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 3rem;
+  height: 60vh;
+}
+
+/* Sidebar */
+.anki-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  padding-right: 2rem;
+  border-right: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='dark'] .anki-sidebar {
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.filter-section h4, .options-section h4 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 1.25rem;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.jlpt-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.filter-btn {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  color: var(--text-muted);
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  cursor: pointer;
+  font-weight: 500;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.filter-btn.active {
+  background: var(--primary-color);
+  color: #fff;
+  border-color: var(--primary-color);
+  box-shadow: var(--primary-shadow);
+}
+
+.options-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+}
+
+.export-action {
+  margin-top: auto;
+}
+
+.selection-count {
+  font-size: 0.95rem;
+  color: var(--primary-color);
+  font-weight: 500;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.export-btn {
+  width: 100%;
+}
+
+/* Main Table Area */
+.anki-main-table {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.table-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.table-container {
+  overflow-y: auto;
+  border-radius: 1rem;
+  background: var(--surface-solid);
+  box-shadow: var(--surface-shadow);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+[data-theme='dark'] .table-container {
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.kanji-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.kanji-table th {
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  backdrop-filter: blur(1rem);
+  -webkit-backdrop-filter: blur(1rem);
+  padding: 1rem 1.5rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  z-index: 10;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+[data-theme='dark'] .kanji-table th {
+  background: rgba(33, 38, 45, 0.95);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.kanji-table td {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(0,0,0,0.03);
+  color: var(--text-muted);
+  vertical-align: middle;
+}
+
+[data-theme='dark'] .kanji-table td {
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.kanji-table tr:hover td {
+  background: rgba(0,0,0,0.01);
+}
+
+[data-theme='dark'] .kanji-table tr:hover td {
+  background: rgba(255,255,255,0.01);
+}
+
+.kanji-table tr.selected-row td {
+  background: rgba(173, 216, 230, 0.1);
+}
+
+.table-kanji-char {
+  font-size: 1.8rem;
+  font-weight: 300;
+  color: var(--text-main) !important;
+}
+
+.table-readings {
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.kanji-table input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+}

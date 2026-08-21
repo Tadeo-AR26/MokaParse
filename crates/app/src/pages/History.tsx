@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import AnkiExport from "./AnkiExport";
 import "./History.css";
 
 type HistoryRecord = {
@@ -16,6 +17,7 @@ export default function History() {
   const [loading, setLoading] = useState(true);
   const [selectedRecord, setSelectedRecord] = useState<HistoryRecord | null>(null);
   const [showAllKanjis, setShowAllKanjis] = useState(false);
+  const [isAnkiExportOpen, setIsAnkiExportOpen] = useState(false);
 
   async function loadHistory() {
     try {
@@ -99,15 +101,24 @@ export default function History() {
                   <h3 className="modal-title">{selectedRecord.file_name}</h3>
                   <p className="modal-subtitle">Analyzed on: {selectedRecord.analyzed_at}</p>
                 </div>
-                <button 
-                  onClick={() => {
+                <div>
+                  <button 
+                    onClick={() => setIsAnkiExportOpen(true)}
+                    className="btn-primary"
+                    style={{marginRight: '1rem', padding: '0.8rem 1.5rem'}}
+                  >
+                    Export to Anki
+                  </button>
+                  <button 
+                    onClick={() => {
                     setSelectedRecord(null);
                     setShowAllKanjis(false);
                   }}
                   className="modal-close-btn"
                 >
                   Close
-                </button>
+                  </button>
+                </div>
               </div>
               
               {/* Analysis full content */}
@@ -171,6 +182,12 @@ export default function History() {
                       </div>
                   </div>
               </div>
+              
+              <AnkiExport 
+                  isOpen={isAnkiExportOpen} 
+                  onClose={() => setIsAnkiExportOpen(false)} 
+                  kanjiList={sortedKanjis} 
+              />
             </div>
           </div>
         );
