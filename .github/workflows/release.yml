@@ -65,6 +65,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           projectPath: crates/app
+          tauriScript: pnpm --ignore-workspace tauri
           tagName: ${{ github.ref_name }}        # Usa el mismo tag que disparó el workflow
           releaseName: 'MokaParse ${{ github.ref_name }}'
           releaseBody: |
